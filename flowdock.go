@@ -1,4 +1,4 @@
-package main
+package main 
 
 import (
 	"bytes"
@@ -8,9 +8,9 @@ import (
 	"net/http"
 )
 
-type activityPayload struct {
+type fd_new_thread struct {
 	Flow_Token string `json:"flow_token"`
-	Event      string `json:"event"`
+	Event      string `jsonevent"`
 	Author     struct {
 		Name   string `json:"name"`
 		Avatar string `json:"avatar"`
@@ -32,21 +32,16 @@ type activityPayload struct {
 	} `json:thread`
 }
 
-func sendActivity(title string) {
+func fdNewThread(data fd_new_thread) (string,[]byte) {
 
-	url := "https://api.flowdock.com/messages"
-	//fmt.Println("URL:>", url)
+	url := "https://i.flowdock.com/messages"
 
-	payload := &activityPayload{Flow_Token: "85a775399adffa1f652a3bf7b4466d77", Event: "discussion", External_Thread_Id: "1234567", Title: title}
-
-	//var payload = []byte(`{"flow_token": "85a775399adffa1f652a3bf7b4466d77","event":"message","author": {"name": "Marty","avatar": "https://avatars.githubusercontent.com/u/3017123?v=3"},"title": "updated ticket","external_thread_id": "1234567","thread": {"title": "Polish the flux capacitor","fields": [{ "label": "Dustiness", "value": "5 - severe" }],"body": "The flux capacitor has been in storage for more than 30 years and it needs to be spick and span for the re-launch.","external_url": "https://example.com/projects/bttf/tickets/1234567","status": {"color": "green","value": "open"}}}`)
+	//payload := &fdInboxStruct{Flow_Token: data.Flow_Token, Event: data.Event, External_Thread_Id: data.External_Thread_Id, Title: data.Subject}
+	payload := "wait"
 	p, err := json.Marshal(payload)
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
-
-	fmt.Println(string(p))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(p))
 	req.Header.Set("Content-Type", "application/json")
@@ -58,8 +53,13 @@ func sendActivity(title string) {
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
+	//fmt.Println("response Status:", resp.Status)
+	//fmt.Println("response Headers:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	//fmt.Println("response Body:", string(body),string(p))
+
+	return resp.Status,body
+}
+
+func fdAddToThread() {
 }
