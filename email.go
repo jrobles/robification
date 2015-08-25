@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/sendgrid/sendgrid-go"
 )
 
@@ -13,8 +12,6 @@ type new_email struct {
 }
 
 func sendEmail(config *JSONConfigData, data *new_email) {
-	fmt.Println(config, data)
-
 	for _, v := range data.Recipients {
 		sendGrid(v, data.From, data.Subject, data.Body, config.SendGrid.User, config.SendGrid.Key)
 	}
