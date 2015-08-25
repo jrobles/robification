@@ -1,4 +1,4 @@
-package main 
+package main
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 
 type fd_new_thread struct {
 	Flow_Token string `json:"flow_token"`
-	Event      string `jsonevent"`
+	Event      string `json:"event"`
 	Author     struct {
 		Name   string `json:"name"`
 		Avatar string `json:"avatar"`
@@ -29,16 +29,14 @@ type fd_new_thread struct {
 			Color string `json:"color"`
 			Value string `json:"value"`
 		} `json:"status"`
-	} `json:thread`
+	} `json:"thread"`
 }
 
-func fdNewThread(data fd_new_thread) (string,[]byte) {
+func fdNewThread(data *fd_new_thread) {
 
-	url := "https://i.flowdock.com/messages"
+	url := "https://api.flowdock.com/messages"
 
-	//payload := &fdInboxStruct{Flow_Token: data.Flow_Token, Event: data.Event, External_Thread_Id: data.External_Thread_Id, Title: data.Subject}
-	payload := "wait"
-	p, err := json.Marshal(payload)
+	p, err := json.Marshal(data)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -53,12 +51,11 @@ func fdNewThread(data fd_new_thread) (string,[]byte) {
 	}
 	defer resp.Body.Close()
 
-	//fmt.Println("response Status:", resp.Status)
-	//fmt.Println("response Headers:", resp.Header)
+	fmt.Println("-----------------------------------------------------")
+	fmt.Println("RESPONSE STATUS:", resp.Status)
+	fmt.Println("RESPONSE HEADERS:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	//fmt.Println("response Body:", string(body),string(p))
-
-	return resp.Status,body
+	fmt.Println("RESPONSE BODY:", string(body), string(p))
 }
 
 func fdAddToThread() {

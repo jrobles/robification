@@ -8,16 +8,14 @@ import (
 
 type Payload struct {
 	Targets []struct {
-		Destination_Type string `json:destination_type`
+		Destination_Type     string `json:destination_type`
 		Destination_Sub_Type string `json:destination_sub_type`
-		Data struct {
-			New_Email new_email
-			Fd_New_Thread fd_new_thread
-		} `json:data`
+		Data                 json.RawMessage
 	} `json:targets`
 }
 
 var status string
+
 type Status struct {
 	Status string
 }
@@ -43,16 +41,21 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 	var p Payload
 	err := decoder.Decode(&p)
 
-fmt.Println(p)
-
 	if err != nil {
 		status = "ERROR: INVALID JSON"
 	} else {
 
-		for _,payloadData := range p.Targets {
-			if (payloadData.Destination_Type) == "flowdock" {
-				fmt.Println(payloadData)
-			}	
+		for _, payloadData := range p.Targets {
+			switch string(payloadData.Destination_Type) {
+			case "email":
+				//data := &new_email{}
+				//json.Unmarshal(payloadData.Data, &data)
+				//fmt.Println(data)
+			case "flowdock":
+				data := &fd_new_thread{}
+				json.Unmarshal(payloadData.Data, &data)
+				fdNewThread(data)
+			}
 		}
 		status = "HEY, WE STR8"
 	}
