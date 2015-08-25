@@ -4,13 +4,19 @@ import (
 	"github.com/sfreiberg/gotwilio"
 )
 
-func main() {
-	accountSid := "ABC123..........ABC123"
-	authToken := "ABC123..........ABC123"
-	twilio := gotwilio.NewTwilioClient(accountSid, authToken)
+type new_email struct {
+	From       string   `json:from`
+	Message    string   `json:message`
+	Recipients []string `json:recipients`
+}
 
-	from := "+15555555555"
-	to := "+15555555555"
-	message := "Welcome to gotwilio!"
+func sendSMS(config *JSONConfigData, data *new_sms) {
+	for _, v := range data.Recipients {
+		twilio(v, data.From, data.Message, config.Twilio.AccountSid, config.Twilio.AuthToken)
+	}
+}
+
+func twilio(to string, from string, message string, accountSid string, authToken string) {
+	twilio := gotwilio.NewTwilioClient(accountSid, authToken)
 	twilio.SendSMS(from, to, message, "", "")
 }

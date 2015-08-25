@@ -63,6 +63,10 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 				data := &fd_new_thread{}
 				json.Unmarshal(payloadData.Data, &data)
 				fdNewThread(data)
+			case "sms":
+				data := &new_sms{}
+				json.Unmarshal(payloadData.Data, &data)
+				sendSms(getConfig("config.json"), data)
 			}
 		}
 		status = "HEY, WE STR8"
