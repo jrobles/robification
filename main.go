@@ -3,8 +3,16 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
+
+type JSONConfigData struct {
+	SendGrid struct {
+		User string `json:user`
+		Key  string `json:key`
+	} `json:sendGrid`
+}
 
 type Payload struct {
 	Targets []struct {
@@ -48,9 +56,9 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 		for _, payloadData := range p.Targets {
 			switch string(payloadData.Destination_Type) {
 			case "email":
-				//data := &new_email{}
-				//json.Unmarshal(payloadData.Data, &data)
-				//fmt.Println(data)
+				data := &new_email{}
+				json.Unmarshal(payloadData.Data, &data)
+				sendEmail(getConfig("config.json"), data)
 			case "flowdock":
 				data := &fd_new_thread{}
 				json.Unmarshal(payloadData.Data, &data)
@@ -63,4 +71,14 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	b, _ := json.Marshal(&Status{Status: status})
 	fmt.Fprintf(res, string(b))
+}
+
+func getConfig(jsonFile string) (config *JSONConfigData) {
+	config = &JSONConfigData{}
+	J, err := ioutil.ReadFile(jsonFile)
+	if err != nil {
+		panic(err)
+	}
+	json.Unmarshal([]byte(J), &config)
+	return config
 }
