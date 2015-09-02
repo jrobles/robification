@@ -34,6 +34,7 @@ type fd_new_thread struct {
 
 func fdNewThread(data *fd_new_thread) {
 
+	fmt.Println(data)
 	url := "https://api.flowdock.com/messages"
 
 	p, err := json.Marshal(data)
@@ -56,7 +57,4 @@ func fdNewThread(data *fd_new_thread) {
 	fmt.Println("RESPONSE HEADERS:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("RESPONSE BODY:", string(body), string(p))
-}
-
-func fdAddToThread() {
 }

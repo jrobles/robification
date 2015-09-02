@@ -4,7 +4,7 @@ import (
 	"github.com/sfreiberg/gotwilio"
 )
 
-type new_email struct {
+type new_sms struct {
 	From       string   `json:from`
 	Message    string   `json:message`
 	Recipients []string `json:recipients`
@@ -12,7 +12,8 @@ type new_email struct {
 
 func sendSMS(config *JSONConfigData, data *new_sms) {
 	for _, v := range data.Recipients {
-		twilio(v, data.From, data.Message, config.Twilio.AccountSid, config.Twilio.AuthToken)
+		//twilio(v, data.From, data.Message, config.Twilio.AccountSid, config.Twilio.AuthToken)
+		print(v)
 	}
 }
 
