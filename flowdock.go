@@ -1,12 +1,28 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
 )
+
+var (
+	FlowdockRobotName string = "robiBot"
+	FlowdockChatUrl   string = "https://api.flowdock.com/v1/messages/chat/"
+	FlowdockInboxUrl  string = "https://api.flowdock.com/v1/messages/team_inbox/"
+)
+
+type fd_new_chat struct {
+	Flow_Token         string `json:"flow_token"`
+	Content            string `json:"content"`
+	External_User_Name string `json:"external_user_name"`
+}
+
+type fd_new_inbox struct {
+	Flow_Token   string `json:"flow_token"`
+	Subject      string `json:"subject"`
+	From_Address string `json:"from_address"`
+	Source       string `json:"source"`
+	Content      string `json:"content"`
+}
 
 type fd_new_thread struct {
 	Flow_Token string `json:"flow_token"`
@@ -34,29 +50,29 @@ type fd_new_thread struct {
 
 func fdNewThread(data *fd_new_thread) {
 
-	url := "https://api.flowdock.com/messages"
-
 	p, err := json.Marshal(data)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(p))
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
 
-	fmt.Println("-----------------------------------------------------")
-	fmt.Println("RESPONSE STATUS:", resp.Status)
-	fmt.Println("RESPONSE HEADERS:", resp.Header)
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("RESPONSE BODY:", string(body), string(p))
+	postToEndpoint(FlowdockInboxUrl+data.Flow_Token, p)
 }
 
-func fdAddToThread() {
+func fdNewInbox(data *fd_new_inbox) {
+
+	p, err := json.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+
+	postToEndpoint(FlowdockInboxUrl+data.Flow_Token, p)
+}
+
+func fdNewChat(data *fd_new_chat) {
+	p, err := json.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+
+	postToEndpoint(FlowdockChatUrl+data.Flow_Token, p)
 }

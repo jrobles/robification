@@ -60,9 +60,17 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 				json.Unmarshal(payloadData.Data, &data)
 				sendEmail(getConfig("config.json"), data)
 			case "flowdock":
-				data := &fd_new_thread{}
-				json.Unmarshal(payloadData.Data, &data)
-				fdNewThread(data)
+				switch string(payloadData.Destination_Sub_Type) {
+				case "inbox":
+					data := &fd_new_inbox{}
+					json.Unmarshal(payloadData.Data, &data)
+					fdNewInbox(data)
+				case "chat":
+					data := &fd_new_chat{}
+					data.External_User_Name = "robiBot"
+					json.Unmarshal(payloadData.Data, &data)
+					fdNewChat(data)
+				}
 			}
 		}
 		status = "HEY, WE STR8"
