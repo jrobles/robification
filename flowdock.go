@@ -16,7 +16,7 @@ type fd_new_chat struct {
 	External_User_Name string `json:"external_user_name"`
 }
 
-type fd_new_inbox struct {
+type fd_new_inbox_basic struct {
 	Flow_Token   string `json:"flow_token"`
 	Subject      string `json:"subject"`
 	From_Address string `json:"from_address"`
@@ -24,7 +24,7 @@ type fd_new_inbox struct {
 	Content      string `json:"content"`
 }
 
-type fd_new_thread struct {
+type fd_new_inbox_detailed struct {
 	Flow_Token string `json:"flow_token"`
 	Event      string `json:"event"`
 	Author     struct {
@@ -48,7 +48,7 @@ type fd_new_thread struct {
 	} `json:"thread"`
 }
 
-func fdNewThread(data *fd_new_thread) {
+func fdNewInboxDetailed(data *fd_new_inbox_detailed) {
 
 	p, err := json.Marshal(data)
 	if err != nil {
@@ -58,7 +58,7 @@ func fdNewThread(data *fd_new_thread) {
 	postToEndpoint(FlowdockInboxUrl+data.Flow_Token, p)
 }
 
-func fdNewInbox(data *fd_new_inbox) {
+func fdNewInboxBasic(data *fd_new_inbox_basic) {
 
 	p, err := json.Marshal(data)
 	if err != nil {
