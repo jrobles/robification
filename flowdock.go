@@ -5,9 +5,10 @@ import (
 )
 
 var (
-	FlowdockRobotName string = "robiBot"
-	FlowdockChatUrl   string = "https://api.flowdock.com/v1/messages/chat/"
-	FlowdockInboxUrl  string = "https://api.flowdock.com/v1/messages/team_inbox/"
+	FlowdockRobotName      string = "robiBot"
+	FlowdockChatUrl        string = "https://api.flowdock.com/v1/messages/chat/"
+	FlowdockInboxUrl       string = "https://api.flowdock.com/v1/messages/team_inbox/"
+	FlowdockInboxDetailUrl string = "https://api.flowdock.com/v1/flows/sandboxstudio/a51/messages/"
 )
 
 type fd_new_chat struct {
@@ -55,7 +56,7 @@ func fdNewInboxDetailed(data *fd_new_inbox_detailed) {
 		panic(err)
 	}
 
-	postToEndpoint(FlowdockInboxUrl+data.Flow_Token, p)
+	postToEndpoint(FlowdockInboxDetailUrl+data.Flow_Token, p)
 }
 
 func fdNewInboxBasic(data *fd_new_inbox_basic) {

@@ -77,7 +77,7 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 				}
 			}
 		}
-		status = "HEY, WE STR8"
+		status = "WIP"
 	}
 
 	res.Header().Set("Content-Type", "application/json")
