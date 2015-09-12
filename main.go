@@ -22,10 +22,12 @@ type Payload struct {
 	} `json:targets`
 }
 
-var status string
-
 type Status struct {
-	Status string
+	Name string
+}
+
+type Responses struct {
+	Items []Status
 }
 
 func main() {
@@ -49,8 +51,12 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 	var p Payload
 	err := decoder.Decode(&p)
 
+	statuses := []Status{}
+	response := Responses{statuses}
+
 	if err != nil {
-		status = "ERROR: INVALID JSON"
+		payloadCheck := Status{Name: "Invalid JSON"}
+		response := append(response.Items, payloadCheck)
 	} else {
 
 		for _, payloadData := range p.Targets {
@@ -59,29 +65,36 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 				data := &new_email{}
 				json.Unmarshal(payloadData.Data, &data)
 				sendEmail(getConfig("config.json"), data)
+				res := Status{Name: "Email:"}
+				response := append(response.Items, res)
 			case "flowdock":
 				switch string(payloadData.Destination_Sub_Type) {
 				case "inbox_basic":
 					data := &fd_new_inbox_basic{}
 					json.Unmarshal(payloadData.Data, &data)
 					fdNewInboxBasic(data)
+					res := Status{Name: "Inbox:"}
+					response := append(response.Items, res)
 				case "inbox_detailed":
 					data := &fd_new_inbox_detailed{}
 					json.Unmarshal(payloadData.Data, &data)
 					fdNewInboxDetailed(data)
+					res := Status{Name: "Inbox Detailed:"}
+					response := append(response.Items, res)
 				case "chat":
 					data := &fd_new_chat{}
 					data.External_User_Name = "robiBot"
 					json.Unmarshal(payloadData.Data, &data)
 					fdNewChat(data)
+					res := Status{Name: "Chat:"}
+					response := append(response.Items, res)
 				}
 			}
 		}
-		status = "WIP"
 	}
 
 	res.Header().Set("Content-Type", "application/json")
-	b, _ := json.Marshal(&Status{Status: status})
+	b, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(b))
 }
 
