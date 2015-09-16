@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func postToEndpoint(url string, p []byte) {
+func postToEndpoint(url string, p []byte) string {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(p))
 	req.Header.Set("Content-Type", "application/json")
 
@@ -23,4 +23,5 @@ func postToEndpoint(url string, p []byte) {
 	fmt.Println("RESPONSE HEADERS:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println("RESPONSE BODY:", string(body), string(p))
+	return resp.Status
 }
