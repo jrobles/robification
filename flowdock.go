@@ -49,31 +49,31 @@ type fd_new_inbox_detailed struct {
 	} `json:"thread"`
 }
 
-func fdNewInboxDetailed(data *fd_new_inbox_detailed) {
+func fdNewInboxDetailed(data *fd_new_inbox_detailed) string {
 
 	p, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
 
-	postToEndpoint(FlowdockInboxDetailUrl+data.Flow_Token, p)
+	return postToEndpoint(FlowdockInboxDetailUrl+data.Flow_Token, p)
 }
 
-func fdNewInboxBasic(data *fd_new_inbox_basic) {
+func fdNewInboxBasic(data *fd_new_inbox_basic) string {
 
 	p, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
 
-	postToEndpoint(FlowdockInboxUrl+data.Flow_Token, p)
+	return postToEndpoint(FlowdockInboxUrl+data.Flow_Token, p)
 }
 
-func fdNewChat(data *fd_new_chat) {
+func fdNewChat(data *fd_new_chat) string {
 	p, err := json.Marshal(data)
 	if err != nil {
 		panic(err)
 	}
 
-	postToEndpoint(FlowdockChatUrl+data.Flow_Token, p)
+	return postToEndpoint(FlowdockChatUrl+data.Flow_Token, p)
 }
