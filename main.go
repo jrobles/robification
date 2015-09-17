@@ -35,11 +35,25 @@ func main() {
 	// Some routing
 	http.HandleFunc("/", indexAction)
 	http.HandleFunc("/send", sendAction)
+	http.HandleFunc("/v1/flowdock/chat", sendChatAction)
 
 	err := http.ListenAndServe(":1337", nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func sendChatAction(res http.ResponseWriter, req *http.Request) {
+	decoder := json.NewDecoder(req.Body)
+	var p fd_new_chat
+	err := decoder.Decode(&p)
+
+	data := &fd_new_chat{}
+	data.External_User_Name = "robiBot"
+	json.Unmarshal(payloadData.Data, &data)
+	dook := fdNewChat(data)
+	fmt.Println(dook)
+
 }
 
 func indexAction(res http.ResponseWriter, req *http.Request) {
@@ -86,8 +100,6 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 			}
 		}
 	}
-
-	fmt.Println(response)
 
 	res.Header().Set("Content-Type", "application/json")
 	b, _ := json.Marshal(response)
