@@ -44,16 +44,26 @@ func main() {
 }
 
 func sendChatAction(res http.ResponseWriter, req *http.Request) {
+	statuses := []Status{}
+	response := Responses{statuses}
+
 	decoder := json.NewDecoder(req.Body)
 	var p fd_new_chat
 	err := decoder.Decode(&p)
 
-	data := &fd_new_chat{}
-	data.External_User_Name = "robiBot"
-	json.Unmarshal(payloadData.Data, &data)
-	dook := fdNewChat(data)
-	fmt.Println(dook)
+	if err != nil {
+		panic(err)
+	} else {
+		p.Flow_Token = string(req.Header["Token"][0])
+		p.Content = string(p.Content)
+		p.External_User_Name = "robiBot"
+		res := Status{Name: fdNewChat(&p)}
+		response.Items = append(response.Items, res)
+	}
 
+	res.Header().Set("Content-Type", "application/json")
+	b, _ := json.Marshal(response)
+	fmt.Fprintf(res, string(b))
 }
 
 func indexAction(res http.ResponseWriter, req *http.Request) {
