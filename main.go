@@ -44,26 +44,24 @@ func main() {
 }
 
 func sendChatAction(res http.ResponseWriter, req *http.Request) {
-	statuses := []Status{}
-	response := Responses{statuses}
-
-	decoder := json.NewDecoder(req.Body)
-	var p fd_new_chat
-	err := decoder.Decode(&p)
-
+	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		panic(err)
 	} else {
-		p.Flow_Token = string(req.Header["Token"][0])
-		p.Content = string(p.Content)
-		p.External_User_Name = "robiBot"
-		res := Status{Name: fdNewChat(&p)}
-		response.Items = append(response.Items, res)
-	}
+		statuses := []Status{}
+		response := Responses{statuses}
 
-	res.Header().Set("Content-Type", "application/json")
-	b, _ := json.Marshal(response)
-	fmt.Fprintf(res, string(b))
+		data := &fd_new_chat{}
+		data.External_User_Name = "robiBot"
+		data.Flow_Token = string(req.Header["Token"][0])
+		data.Content = string(body)
+		result := Status{Name: fdNewChat(data)}
+		response.Items = append(response.Items, result)
+
+		res.Header().Set("Content-Type", "application/json")
+		b, _ := json.Marshal(response)
+		fmt.Fprintf(res, string(b))
+	}
 }
 
 func indexAction(res http.ResponseWriter, req *http.Request) {
@@ -93,19 +91,19 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 				case "inbox_basic":
 					data := &fd_new_inbox_basic{}
 					json.Unmarshal(payloadData.Data, &data)
-					res := Status{Name: fdNewInboxBasic(data)}
-					response.Items = append(response.Items, res)
+					result := Status{Name: fdNewInboxBasic(data)}
+					response.Items = append(response.Items, result)
 				case "inbox_detailed":
 					data := &fd_new_inbox_detailed{}
 					json.Unmarshal(payloadData.Data, &data)
-					res := Status{Name: fdNewInboxDetailed(data)}
-					response.Items = append(response.Items, res)
+					result := Status{Name: fdNewInboxDetailed(data)}
+					response.Items = append(response.Items, result)
 				case "chat":
 					data := &fd_new_chat{}
 					data.External_User_Name = "robiBot"
 					json.Unmarshal(payloadData.Data, &data)
-					res := Status{Name: fdNewChat(data)}
-					response.Items = append(response.Items, res)
+					result := Status{Name: fdNewChat(data)}
+					response.Items = append(response.Items, result)
 				}
 			}
 		}
