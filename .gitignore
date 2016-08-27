@@ -25,6 +25,7 @@ _testmain.go
 *.test
 *.prof
 *.json
+*.swp
 
 golang-notifier
 payload.json.sample

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -33,7 +34,7 @@ type Responses struct {
 func main() {
 
 	// Some routing
-	http.HandleFunc("/", indexAction)
+	http.HandleFunc("/v1/ping", ping)
 	http.HandleFunc("/send", sendAction)
 
 	// Flowdock
@@ -90,8 +91,11 @@ func flowdockChatAction(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func indexAction(res http.ResponseWriter, req *http.Request) {
-
+func ping(res http.ResponseWriter, req *http.Request) {
+	res.Header().Set("Content-Type", "application/json")
+	fmt.Fprintf(res, "pong")
+	log.Print("INFO: Pinged")
+	res.WriteHeader(200)
 }
 
 func sendAction(res http.ResponseWriter, req *http.Request) {
