@@ -45,6 +45,7 @@ func main() {
 	err := http.ListenAndServe(":1337", nil)
 	if err != nil {
 		fmt.Println(err)
+		log.Printf("ERROR: could not start server - %v", err)
 	}
 }
 
@@ -52,6 +53,7 @@ func flowdockBasicInboxAction(res http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		panic(err)
+		res.WriteHeader(400)
 	} else {
 		statuses := []Status{}
 		response := Responses{statuses}
@@ -74,6 +76,7 @@ func flowdockChatAction(res http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		panic(err)
+		res.WriteHeader(400)
 	} else {
 		statuses := []Status{}
 		response := Responses{statuses}
@@ -88,6 +91,7 @@ func flowdockChatAction(res http.ResponseWriter, req *http.Request) {
 		res.Header().Set("Content-Type", "application/json")
 		b, _ := json.Marshal(response)
 		fmt.Fprintf(res, string(b))
+		res.WriteHeader(200)
 	}
 }
 
@@ -109,6 +113,7 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		payloadCheck := Status{Status: "Invalid JSON"}
 		response.Messages = append(response.Messages, payloadCheck)
+		res.WriteHeader(400)
 	} else {
 		for _, payloadData := range p.Targets {
 			switch string(payloadData.Destination_Type) {
