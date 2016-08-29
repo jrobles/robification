@@ -8,13 +8,6 @@ import (
 	"net/http"
 )
 
-type JSONConfigData struct {
-	SendGrid struct {
-		User string `json:user`
-		Key  string `json:key`
-	} `json:sendGrid`
-}
-
 type Payload struct {
 	Targets []struct {
 		Destination_Type     string `json:destination_type`
@@ -147,14 +140,4 @@ func sendAction(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 	b, _ := json.Marshal(response)
 	fmt.Fprintf(res, string(b))
-}
-
-func getConfig(jsonFile string) (config *JSONConfigData) {
-	config = &JSONConfigData{}
-	J, err := ioutil.ReadFile(jsonFile)
-	if err != nil {
-		panic(err)
-	}
-	json.Unmarshal([]byte(J), &config)
-	return config
 }
