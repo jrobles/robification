@@ -6,10 +6,18 @@ import (
 )
 
 type JSONConfigData struct {
-	SendGrid struct {
-		User string `json:user`
-		Key  string `json:key`
-	} `json:sendGrid`
+	SendGrid SendGrid `json:"sendGrid,omitempty"`
+	Twilio   Twilio   `json:"twilio,omitempty"`
+}
+
+type Twilio struct {
+	User string `json:"accountSid,omitempty"`
+	Key  string `json:"authToken,omitempty"`
+}
+
+type SendGrid struct {
+	User string `json:"user,omitempty"`
+	Key  string `json:"key,omitempty"`
 }
 
 func getConfig(jsonFile string) (config *JSONConfigData) {
