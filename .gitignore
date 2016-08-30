@@ -27,6 +27,5 @@ _testmain.go
 *.json
 *.swp
 
-golang-notifier
 payload.json.sample
 robification
