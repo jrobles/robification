@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -39,29 +38,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 		log.Printf("ERROR: could not start server - %v", err)
-	}
-}
-
-func flowdockV1Chat(res http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		panic(err)
-		res.WriteHeader(400)
-	} else {
-		statuses := []Status{}
-		response := Responses{statuses}
-
-		data := &fdChat{}
-		data.External_User_Name = "robiBot"
-		data.Flow_Token = string(req.Header["Token"][0])
-		data.Content = string(body)
-		result := Status{Status: fd_sendChat(data)}
-		response.Messages = append(response.Messages, result)
-
-		res.Header().Set("Content-Type", "application/json")
-		b, _ := json.Marshal(response)
-		fmt.Fprintf(res, string(b))
-		res.WriteHeader(200)
 	}
 }
 

@@ -2,11 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 )
 
 var (
-	FlowdockRobotName      string = "robiBot"
+	flowdockBotName        string = "robiBot"
 	FlowdockChatUrl        string = "https://api.flowdock.com/v1/messages/chat/"
 	FlowdockInboxUrl       string = "https://api.flowdock.com/v1/messages/team_inbox/"
 	FlowdockInboxDetailUrl string = "https://api.flowdock.com/v1/flows/sandboxstudio/a51/messages/"
@@ -74,4 +77,27 @@ func fd_sendChat(data *fdChat) string {
 	}
 	return postToEndpoint(FlowdockChatUrl+data.Flow_Token, p)
 
+}
+
+func flowdockV1Chat(res http.ResponseWriter, req *http.Request) {
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		panic(err)
+		res.WriteHeader(400)
+	} else {
+		statuses := []Status{}
+		response := Responses{statuses}
+
+		data := &fdChat{}
+		data.External_User_Name = flowdockBotName
+		data.Flow_Token = string(req.Header["Token"][0])
+		data.Content = string(body)
+		result := Status{Status: fd_sendChat(data)}
+		response.Messages = append(response.Messages, result)
+
+		res.Header().Set("Content-Type", "application/json")
+		b, _ := json.Marshal(response)
+		fmt.Fprintf(res, string(b))
+		res.WriteHeader(200)
+	}
 }
