@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -43,6 +44,19 @@ func main() {
 		fmt.Println(err)
 		log.Printf("ERROR: could not start server - %v", err)
 	}
+}
+
+func postToEndpoint(url string, p []byte) string {
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(p))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	return resp.Status
 }
 
 func ping(res http.ResponseWriter, req *http.Request) {
