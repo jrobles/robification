@@ -75,12 +75,9 @@ func fd_sendChat(data *fdChat) string {
 func flowdockV1Chat(res http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		panic(err)
+		log.Printf("ERROR: could not read data - %v", err)
 		res.WriteHeader(400)
 	} else {
-		statuses := []Status{}
-		response := Responses{statuses}
-
 		data := &fdChat{}
 		data.External_User_Name = config.Flowdock.BotName
 		data.Flow_Token = string(req.Header["Token"][0])

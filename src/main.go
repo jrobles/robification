@@ -25,7 +25,9 @@ type Responses struct {
 }
 
 var (
-	config = getConfig("config.json")
+	config   = getConfig("config.json")
+	statuses = []Status{}
+	response = Responses{statuses}
 )
 
 func main() {
@@ -70,9 +72,6 @@ func sendMessage(res http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	var p Payload
 	err := decoder.Decode(&p)
-
-	statuses := []Status{}
-	response := Responses{statuses}
 
 	if err != nil {
 		payloadCheck := Status{Status: "Invalid JSON"}
