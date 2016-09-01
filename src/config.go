@@ -5,9 +5,17 @@ import (
 	"io/ioutil"
 )
 
-type JSONConfigData struct {
+type Config struct {
 	SendGrid SendGrid `json:"sendGrid,omitempty"`
 	Twilio   Twilio   `json:"twilio,omitempty"`
+	Flowdock Flowdock `json:"flowdock,omitempty"`
+}
+
+type Flowdock struct {
+	BotName          string `json:"botName,omitempty"`
+	ChatURL          string `json:"chatURL,omitempty"`
+	InboxURL         string `json:inboxURL,omntempty`
+	DetailedInboxURL string `json:inboxDetailURL,omtempty`
 }
 
 type Twilio struct {
@@ -20,8 +28,8 @@ type SendGrid struct {
 	Key  string `json:"key,omitempty"`
 }
 
-func getConfig(jsonFile string) (config *JSONConfigData) {
-	config = &JSONConfigData{}
+func getConfig(jsonFile string) (config *Config) {
+	config = &Config{}
 	J, err := ioutil.ReadFile(jsonFile)
 	if err != nil {
 		panic(err)

@@ -8,13 +8,6 @@ import (
 	"net/http"
 )
 
-var (
-	flowdockBotName        string = "robiBot"
-	FlowdockChatUrl        string = "https://api.flowdock.com/v1/messages/chat/"
-	FlowdockInboxUrl       string = "https://api.flowdock.com/v1/messages/team_inbox/"
-	FlowdockInboxDetailUrl string = "https://api.flowdock.com/v1/flows/sandboxstudio/a51/messages/"
-)
-
 type fdChat struct {
 	Flow_Token         string `json:"flow_token,omitempty"`
 	Content            string `json:"content,omitempty"`
@@ -58,7 +51,7 @@ func fd_sendDetailedInboxMessage(data *fdDetailedInboxMessage) string {
 	if err != nil {
 		log.Printf("ERROR: could not parse data - %v", data)
 	}
-	return postToEndpoint(FlowdockInboxDetailUrl+data.Flow_Token, p)
+	return postToEndpoint(config.Flowdock.DetailedInboxURL+data.Flow_Token, p)
 
 }
 
@@ -67,7 +60,7 @@ func fd_sendBasicInboxMessage(data *fdBasicInboxMessage) string {
 	if err != nil {
 		log.Printf("ERROR: could not parse data - %v", data)
 	}
-	return postToEndpoint(FlowdockInboxUrl+data.Flow_Token, p)
+	return postToEndpoint(config.Flowdock.InboxURL+data.Flow_Token, p)
 }
 
 func fd_sendChat(data *fdChat) string {
@@ -75,7 +68,7 @@ func fd_sendChat(data *fdChat) string {
 	if err != nil {
 		log.Printf("ERROR: could not parse data - %v", data)
 	}
-	return postToEndpoint(FlowdockChatUrl+data.Flow_Token, p)
+	return postToEndpoint(config.Flowdock.ChatURL+data.Flow_Token, p)
 
 }
 
@@ -89,7 +82,7 @@ func flowdockV1Chat(res http.ResponseWriter, req *http.Request) {
 		response := Responses{statuses}
 
 		data := &fdChat{}
-		data.External_User_Name = flowdockBotName
+		data.External_User_Name = config.Flowdock.BotName
 		data.Flow_Token = string(req.Header["Token"][0])
 		data.Content = string(body)
 		result := Status{Status: fd_sendChat(data)}

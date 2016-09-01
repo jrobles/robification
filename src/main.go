@@ -23,6 +23,10 @@ type Responses struct {
 	Messages []Status
 }
 
+var (
+	config = getConfig("config.json")
+)
+
 func main() {
 
 	// Some routing
@@ -66,7 +70,7 @@ func sendMessage(res http.ResponseWriter, req *http.Request) {
 			case "email":
 				data := &new_email{}
 				json.Unmarshal(payloadData.Data, &data)
-				sendEmail(getConfig("config.json"), data)
+				sendEmail(config, data)
 			case "flowdock":
 				switch string(payloadData.Destination_Sub_Type) {
 				case "inbox_basic":
