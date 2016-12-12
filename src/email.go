@@ -11,7 +11,7 @@ type new_email struct {
 	Recipients []string `json:recipients`
 }
 
-func sendEmail(config *JSONConfigData, data *new_email) {
+func sendEmail(config *Config, data *new_email) {
 	for _, v := range data.Recipients {
 		sendGrid(v, data.From, data.Subject, data.Body, config.SendGrid.User, config.SendGrid.Key)
 	}
